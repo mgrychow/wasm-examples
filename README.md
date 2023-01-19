@@ -6,8 +6,8 @@
 # Steps
 * Set up emscripten (see prerequisites) and make sure the compiler is present: `which emcc`
 * Compile `rand_gen.cpp` to WASM (one of the following options):
-  1. Bare metal: `emcc -lembind -o rand_gen_c.js rand_gen.cpp`.
-  2. Docker compilation: `docker run --rm -v $(pwd):/src -u $(id -u):$(id -g) emscripten/emsdk emcc -lembind -o rand_gen_c.js rand_gen.cpp`
+  1. Bare metal: `emcc -lembind -DENABLE_WASM -o rand_gen_c.js rand_gen.cpp`.
+  2. Docker compilation: `docker run --rm -v $(pwd):/src -u $(id -u):$(id -g) emscripten/emsdk emcc -lembind -DENABLE_WASM -o rand_gen_c.js rand_gen.cpp`
 
   This should generate `gen_rand_c.wasm`
   file with WebAssembly code and `gen_rand_c.js` with JS "glue" code.

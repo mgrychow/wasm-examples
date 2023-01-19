@@ -1,10 +1,14 @@
 #include <iostream>
 #include <random>
 #include <chrono>
+#ifdef ENABLE_WASM
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
-
 using namespace emscripten;
+#else
+#define EMSCRIPTEN_KEEPALIVE
+#endif
+
 
 EMSCRIPTEN_KEEPALIVE int getRandom()
 {
@@ -14,11 +18,13 @@ EMSCRIPTEN_KEEPALIVE int getRandom()
     return distribution(generator); 
 }
 
-EMSCRIPTEN_BINDINGS(my_module) {
-    function("getRandom", &getRandom);
-}
-
-// int main()
-// {
-//     std::cout << getRandom() << std::endl;
+// EMSCRIPTEN_BINDINGS(my_module) {
+//     function("getRandom", &getRandom);
 // }
+
+#ifndef ENABLE_WASM
+int main()
+{
+    std::cout << getRandom() << std::endl;
+}
+#endif
