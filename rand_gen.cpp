@@ -9,22 +9,36 @@ using namespace emscripten;
 #define EMSCRIPTEN_KEEPALIVE
 #endif
 
-
-EMSCRIPTEN_KEEPALIVE int getRandom()
+class IncrementalRandom
 {
-    unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator(seed1);
-    std::uniform_int_distribution<int> distribution(1,100);
-    return distribution(generator); 
-}
+public:
+    IncrementalRandom(): increments(0) {}
+    int getRandom()
+    {
+        unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine generator(seed1);
+        std::uniform_int_distribution<int> distribution(10*increments,10*increments+100);
+        ++increments;
+        return distribution(generator);
+    }
+private:
+    int increments;
+};
 
-// EMSCRIPTEN_BINDINGS(my_module) {
-//     function("getRandom", &getRandom);
-// }
+#ifdef ENABLE_WASM
+EMSCRIPTEN_BINDINGS(my_class_example) {
+  class_<IncrementalRandom>("IncrementalRandom")
+    .constructor()
+    .function("getRandom", &IncrementalRandom::getRandom)
+    ;
+}
+#endif
 
 #ifndef ENABLE_WASM
 int main()
 {
-    std::cout << getRandom() << std::endl;
+    IncrementalRandom incrementalRandom =  IncrementalRandom();
+    for(int i = 0; i < 10; ++i)
+        std::cout << incrementalRandom.getRandom() << std::endl;
 }
 #endif

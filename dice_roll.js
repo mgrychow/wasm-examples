@@ -1,9 +1,13 @@
 var Module = require('./rand_gen_c.js');
 function run(){
-    console.log('getRandom result: ' + Module.__Z9getRandomv());
+    var instance = new Module["IncrementalRandom"]();
+    for (let i = 0; i < 10; i++)
+    {
+        console.log('instance[getRandom] result: ' + instance["getRandom"]());
+    }
 }
 
 Module.onRuntimeInitialized = () => {
-    run()
+    run();
 }
 

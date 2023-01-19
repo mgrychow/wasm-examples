@@ -3,9 +3,16 @@
 <script>
     var Module = {
         onRuntimeInitialized: function() {
-            console.log('__Z9getRandomv result: ' + Module.__Z9getRandomv());
+            var instance = new Module["IncrementalRandom"]();
+            for (let i = 0; i < 10; i++)
+            {
+                let random = instance["getRandom"]();
+                console.log('instance[getRandom] result: ' + random);
+                document.getElementById("demo").innerHTML += random + " ";
+            }
         }
     };
 </script>
 <script src="rand_gen_c.js"></script>
+<p id="demo"></p>
 </html>
